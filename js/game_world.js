@@ -77,20 +77,33 @@ $(function(){
   });
 
   $(document).keydown(function(e){
+    var snake = window.App.GameWorld.snake;
+    var dirs = snake.directions;
+    var dir = snake.direction;
+    var oppDir = [-dir[0],-dir[1]]
+
     if (e.keyCode == 37) { 
-      window.App.GameWorld.snake.setDirection("moveLeft");
+      if (dir !== dirs["moveRight"]) {
+        snake.setDirection("moveLeft");
+      }
       return false;
     }
     if (e.keyCode == 38) { 
-      window.App.GameWorld.snake.setDirection("moveUp");
+      if (dir !== dirs["moveDown"]) {
+        snake.setDirection("moveUp");
+      }
       return false;
     }
     if (e.keyCode == 39) { 
-      window.App.GameWorld.snake.setDirection("moveRight");
+      if (dir !== dirs["moveLeft"]) {
+        snake.setDirection("moveRight");
+      }
       return false;
     }
     if (e.keyCode == 40) { 
-      window.App.GameWorld.snake.setDirection("moveDown");
+      if (dir !== dirs["moveUp"]) {
+       snake.setDirection("moveDown");
+      }
       return false;
     }
   });
