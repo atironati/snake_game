@@ -12,6 +12,7 @@ $(function(){
                        'moveRight':[0,1],
                        'moveDown':[1,0]}
     this.direction = this.directions['moveUp'];
+    this.foodEatenCount = 0;
     this.setup();
   };
 
@@ -32,8 +33,8 @@ $(function(){
       this.direction = this.directions[dir];
     },
     move: function() {
-      head_pos = this.body[0];
-      tail_pos = this.body.pop();
+      var head_pos = this.body[0];
+      var tail_pos = this.body.pop();
 
       // remove tail
       this.grid[tail_pos[0]][tail_pos[1]][0].className = "empty-square";
@@ -41,11 +42,25 @@ $(function(){
       // set old head to regular body part
       this.grid[head_pos[0]][head_pos[1]][0].className = "snake-square";
 
-      // draw new head position
-      new_head_pos_y = head_pos[0] + this.direction[0];
-      new_head_pos_x = head_pos[1] + this.direction[1];
+      // get new head position
+      var new_head_pos_y = head_pos[0] + this.direction[0];
+      var new_head_pos_x = head_pos[1] + this.direction[1];
+
+      // is the snake about to eat food?
+      if (new_head_pos_y === this.gameWorld.food[0] &&
+          new_head_pos_x === this.gameWorld.food[1]) {
+        this.foodEatenCount++;
+        this.body.push(tail_pos); // grow
+        this.gameWorld.resetFood();
+      }
+
       this.grid[new_head_pos_y][new_head_pos_x][0].className = "snake-head-square";
       this.body.unshift([new_head_pos_y,new_head_pos_x]);
+    },
+    foodCheck: function ( food ) {
+      head_pos = this.body[0];
+
+      return (head_pos === food);
     }
   });
 

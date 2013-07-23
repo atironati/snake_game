@@ -42,6 +42,10 @@ $(function(){
       }
 
     },
+    resetFood: function() {
+      // this.grid[this.food[0]][this.food[1]][0].className = "empty-square";
+      this.food = this.setFoodLocation();
+    },
     setFoodLocation: function() {
       var boardTiles = new Array();
       var count = 0;
@@ -66,12 +70,11 @@ $(function(){
       return [food_loc[0],food_loc[1]];
     },
     run: function() {
-      // do something
       this.snake.move();
+
       if (this.gameOn) setTimeout('window.App.GameWorld.run()', 100);
     }
   });
-
 
   $(document).keydown(function(e){
     if (e.keyCode == 37) { 
