@@ -54,6 +54,15 @@ $(function(){
         this.gameWorld.resetFood();
       }
 
+      // is the snake about to eat itself?
+      if ( this.grid[new_head_pos_y][new_head_pos_x][0].className === "snake-square") {
+        this.gameWorld.endGame();
+      }
+
+      // is the snake about to go off the grid?
+
+
+      // draw the head in its new position
       this.grid[new_head_pos_y][new_head_pos_x][0].className = "snake-head-square";
       this.body.unshift([new_head_pos_y,new_head_pos_x]);
     },

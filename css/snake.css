@@ -47,3 +47,21 @@ body {
   border-bottom: 1px solid #999999;
   display: inline-block;
 }
+
+.game-over {
+  background: url('../img/game-over-bg.png');
+  position: absolute;
+  text-align: center;
+  z-index: 100;
+}
+
+.game-over-box {
+  position: relative;
+  color: black;
+  font-family: sans-serif;
+  font-size: 20pt;
+}
+
+.restart-button {
+  font-size: 15pt;
+}

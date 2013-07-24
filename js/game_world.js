@@ -73,6 +73,34 @@ $(function(){
       this.snake.move();
 
       if (this.gameOn) setTimeout('window.App.GameWorld.run()', 100);
+    },
+    endGame: function() {
+      this.gameOn = false;
+      var containerWidth = this.boardSize * this.tileSize;
+      var br = $( "<br />" );
+
+      gameOverScreen = $( "<div></div>", {"class": "game-over"} );
+      gameOverScreen.css({"width":containerWidth,"height":containerWidth, "top":0,"left":"50%", "margin-top":-containerWidth/2, "margin-left":-containerWidth/2});
+
+      restartButton = $( "<input />", {"class": "restart-button"});
+      restartButton.attr("type","button");
+      restartButton.attr("value","Restart");
+      restartButton.attr("onClick","window.App.GameWorld.restart()");
+
+      gameOverBox = $( "<div></div>", {"class": "game-over-box"} );
+      gameOverBox.text('Game Over');
+
+      gameOverBox.append(br);
+      gameOverBox.append(restartButton);
+      gameOverScreen.append(gameOverBox);
+
+      this.el.append(gameOverScreen);
+
+      gameOverBox.css({"top":"50%", "margin-top":-gameOverBox.height()/2});
+    },
+    restart: function() {
+      $(".game-board").remove();
+      window.App.GameWorld = new GameWorld();
     }
   });
 
@@ -82,25 +110,25 @@ $(function(){
     var dir = snake.direction;
     var oppDir = [-dir[0],-dir[1]]
 
-    if (e.keyCode == 37) { 
+    if (e.keyCode == 37) {
       if (dir !== dirs["moveRight"]) {
         snake.setDirection("moveLeft");
       }
       return false;
     }
-    if (e.keyCode == 38) { 
+    if (e.keyCode == 38) {
       if (dir !== dirs["moveDown"]) {
         snake.setDirection("moveUp");
       }
       return false;
     }
-    if (e.keyCode == 39) { 
+    if (e.keyCode == 39) {
       if (dir !== dirs["moveLeft"]) {
         snake.setDirection("moveRight");
       }
       return false;
     }
-    if (e.keyCode == 40) { 
+    if (e.keyCode == 40) {
       if (dir !== dirs["moveUp"]) {
        snake.setDirection("moveDown");
       }
