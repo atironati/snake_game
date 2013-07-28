@@ -2,6 +2,7 @@ $(function(){
 
   var GameWorld = function( ) {
     this.gameOn = false;
+    this.buttonPressed = false;
     this.boardSize = 20;
     this.tileSize = 20;
 
@@ -20,7 +21,6 @@ $(function(){
   };
 
   $.extend( GameWorld.prototype, {
-
     setup: function() {
       var containerWidth = this.boardSize * this.tileSize;
       this.el = $( "<div></div>", {"class": "game-board"} );
@@ -43,7 +43,6 @@ $(function(){
 
     },
     resetFood: function() {
-      // this.grid[this.food[0]][this.food[1]][0].className = "empty-square";
       this.food = this.setFoodLocation();
     },
     setFoodLocation: function() {
@@ -70,6 +69,7 @@ $(function(){
       return [food_loc[0],food_loc[1]];
     },
     run: function() {
+      this.buttonPressed = false;
       this.snake.move();
 
       if (this.gameOn) setTimeout('window.App.GameWorld.run()', 100);
@@ -105,37 +105,52 @@ $(function(){
   });
 
   $(document).keydown(function(e){
+    var buttonPressed = window.App.GameWorld.buttonPressed;
     var snake = window.App.GameWorld.snake;
     var dirs = snake.directions;
     var dir = snake.direction;
     var oppDir = [-dir[0],-dir[1]]
 
     if (e.keyCode == 37) {
-      if (dir !== dirs["moveRight"]) {
+      if (dir !== dirs["moveRight"] &&
+          dir !== dirs["moveLeft"] &&
+          !buttonPressed) {
+        buttonPressed = true;
         snake.setDirection("moveLeft");
       }
       return false;
     }
     if (e.keyCode == 38) {
-      if (dir !== dirs["moveDown"]) {
+      if (dir !== dirs["moveDown"] &&
+          dir !== dirs["moveUp"] &&
+          !buttonPressed) {
+        buttonPressed = true;
         snake.setDirection("moveUp");
       }
       return false;
     }
     if (e.keyCode == 39) {
-      if (dir !== dirs["moveLeft"]) {
+      if (dir !== dirs["moveLeft"] &&
+          dir !== dirs["moveRight"] &&
+          !buttonPressed) {
+        buttonPressed = true;
         snake.setDirection("moveRight");
       }
       return false;
     }
     if (e.keyCode == 40) {
-      if (dir !== dirs["moveUp"]) {
+      if (dir !== dirs["moveUp"] &&
+          dir !== dirs["moveDown"] &&
+          !buttonPressed) {
+       buttonPressed = true;
        snake.setDirection("moveDown");
       }
       return false;
     }
-  });
 
+    window.App.GameWorld.buttonPressed = buttonPressed;
+    return false;
+  });
 
   window.App = window.App || {};
   window.App.GameWorld = new GameWorld();
