@@ -35,14 +35,6 @@ $(function(){
     move: function() {
       var head_pos = this.body[0];
       var tail_pos = this.body.pop();
-
-      // remove tail
-      this.grid[tail_pos[0]][tail_pos[1]][0].className = "empty-square";
-
-      // set old head to regular body part
-      this.grid[head_pos[0]][head_pos[1]][0].className = "snake-square";
-
-      // get new head position
       var new_head_pos_y = head_pos[0] + this.direction[0];
       var new_head_pos_x = head_pos[1] + this.direction[1];
 
@@ -53,6 +45,12 @@ $(function(){
         this.body.push(tail_pos); // grow
         this.gameWorld.resetFood();
       }
+
+      // remove tail
+      this.grid[tail_pos[0]][tail_pos[1]][0].className = "empty-square";
+
+      // set old head to regular body part
+      this.grid[head_pos[0]][head_pos[1]][0].className = "snake-square";
 
       // is the snake about to go off the grid?
       if ((new_head_pos_y < 0 || new_head_pos_y >= this.grid.length) ||
