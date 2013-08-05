@@ -115,7 +115,7 @@ $(function(){
       if (dir !== dirs["moveRight"] &&
           dir !== dirs["moveLeft"] &&
           !buttonPressed) {
-        buttonPressed = true;
+        window.App.GameWorld.buttonPressed = true;
         snake.setDirection("moveLeft");
       }
       return false;
@@ -124,7 +124,7 @@ $(function(){
       if (dir !== dirs["moveDown"] &&
           dir !== dirs["moveUp"] &&
           !buttonPressed) {
-        buttonPressed = true;
+        window.App.GameWorld.buttonPressed = true;
         snake.setDirection("moveUp");
       }
       return false;
@@ -133,7 +133,7 @@ $(function(){
       if (dir !== dirs["moveLeft"] &&
           dir !== dirs["moveRight"] &&
           !buttonPressed) {
-        buttonPressed = true;
+        window.App.GameWorld.buttonPressed = true;
         snake.setDirection("moveRight");
       }
       return false;
@@ -142,7 +142,7 @@ $(function(){
       if (dir !== dirs["moveUp"] &&
           dir !== dirs["moveDown"] &&
           !buttonPressed) {
-       buttonPressed = true;
+       window.App.GameWorld.buttonPressed = true;
        snake.setDirection("moveDown");
       }
       return false;
