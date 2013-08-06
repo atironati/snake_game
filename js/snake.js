@@ -26,11 +26,17 @@ $(function(){
       this.body[1] = [head_pos+1,head_pos];
       this.grid[head_pos+2][head_pos][0].className = "snake-square";
       this.body[2] = [head_pos+2,head_pos];
-
-      // alert(grid[0][0][0].className);
     },
     setDirection: function( dir ) {
-      this.direction = this.directions[dir];
+      var oppDir = [-dir[0],-dir[1]]
+
+      if (this.direction[0] !== oppDir[0] ||
+          this.direction[1] !== oppDir[1]) {
+        this.direction = dir;
+        return true;
+      }
+
+      return false;
     },
     move: function() {
       var head_pos = this.body[0];

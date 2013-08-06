@@ -1,6 +1,10 @@
 $(function(){
 
   var GameWorld = function( ) {
+    this.directions = {37:[0,-1],
+                       38:[-1,0],
+                       39:[0,1],
+                       40:[1,0]}
     this.gameOn = false;
     this.buttonPressed = false;
     this.boardSize = 20;
@@ -105,50 +109,15 @@ $(function(){
   });
 
   $(document).keydown(function(e){
-    var buttonPressed = window.App.GameWorld.buttonPressed;
-    var snake = window.App.GameWorld.snake;
-    var dirs = snake.directions;
-    var dir = snake.direction;
-    var oppDir = [-dir[0],-dir[1]]
+    var gameWorld = window.App.GameWorld;
+    var directions = gameWorld.directions;
+    var buttonPressed = gameWorld.buttonPressed;
+    var snake = gameWorld.snake;
 
-    if (e.keyCode == 37) {
-      if (dir !== dirs["moveRight"] &&
-          dir !== dirs["moveLeft"] &&
-          !buttonPressed) {
-        window.App.GameWorld.buttonPressed = true;
-        snake.setDirection("moveLeft");
-      }
-      return false;
-    }
-    if (e.keyCode == 38) {
-      if (dir !== dirs["moveDown"] &&
-          dir !== dirs["moveUp"] &&
-          !buttonPressed) {
-        window.App.GameWorld.buttonPressed = true;
-        snake.setDirection("moveUp");
-      }
-      return false;
-    }
-    if (e.keyCode == 39) {
-      if (dir !== dirs["moveLeft"] &&
-          dir !== dirs["moveRight"] &&
-          !buttonPressed) {
-        window.App.GameWorld.buttonPressed = true;
-        snake.setDirection("moveRight");
-      }
-      return false;
-    }
-    if (e.keyCode == 40) {
-      if (dir !== dirs["moveUp"] &&
-          dir !== dirs["moveDown"] &&
-          !buttonPressed) {
-       window.App.GameWorld.buttonPressed = true;
-       snake.setDirection("moveDown");
-      }
-      return false;
+    if (!buttonPressed && directions[e.keyCode]) {
+      gameWorld.buttonPressed = snake.setDirection(directions[e.keyCode]);
     }
 
-    window.App.GameWorld.buttonPressed = buttonPressed;
     return false;
   });
 
