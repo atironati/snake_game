@@ -54,7 +54,7 @@ $(function(){
       var count = 0;
       for ( var y=0; y < this.boardSize; y++) {
         for ( var x=0; x < this.boardSize; x++) {
-          boardTiles[count] = [y,x];
+          boardTiles[count] = new Point(x,y);
           count++;
         }
       }
@@ -62,15 +62,19 @@ $(function(){
       // remove each snake position
       var that = this;
       $.each(this.snake.body, function(i,val){
-        indexToRemove = (val[0] * that.boardSize) + val[1];
+        var indexToRemove = (val.y * that.boardSize) + val.x;
         boardTiles.splice(indexToRemove,1);
       });
+
+      // don't forget the head!
+      var indexToRemove = (this.snake.head.y * this.boardSize) + this.snake.head.x;
+      boardTiles.splice(indexToRemove,1);
 
       // randomly set food
       var random = Math.floor((Math.random() * boardTiles.length) - 1);
       var food_loc = boardTiles[random];
-      this.grid[food_loc[0]][food_loc[1]][0].className = 'food';
-      return [food_loc[0],food_loc[1]];
+      this.grid[food_loc.y][food_loc.x][0].className = 'food';
+      return new Point(food_loc.x,food_loc.y);
     },
     run: function() {
       this.buttonPressed = false;
