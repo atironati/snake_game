@@ -66,10 +66,6 @@ $(function(){
         boardTiles.splice(indexToRemove,1);
       });
 
-      // don't forget the head!
-      var indexToRemove = (this.snake.head.y * this.boardSize) + this.snake.head.x;
-      boardTiles.splice(indexToRemove,1);
-
       // randomly set food
       var random = Math.floor((Math.random() * boardTiles.length) - 1);
       var food_loc = boardTiles[random];

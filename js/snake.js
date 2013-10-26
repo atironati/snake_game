@@ -45,13 +45,6 @@ $(function(){
       var new_head_pos_y = head_pos.y + this.direction[0];
       var new_head_pos = new Point(new_head_pos_x,new_head_pos_y);
 
-      // is the snake about to eat food?
-      if (new_head_pos.equals(this.gameWorld.food)) {
-        this.foodEatenCount++;
-        this.body.push(tail_pos); // grow
-        this.gameWorld.resetFood();
-      }
-
       // remove tail
       this.grid[tail_pos.y][tail_pos.x][0].className = "empty-square";
 
@@ -74,6 +67,14 @@ $(function(){
       // draw the head in its new position
       this.grid[new_head_pos.y][new_head_pos.x][0].className = "snake-head-square";
       this.body.unshift(new_head_pos);
+
+      // is the snake about to eat food?
+      if (new_head_pos.equals(this.gameWorld.food)) {
+        this.foodEatenCount++;
+        this.body.push(tail_pos); // grow
+        this.gameWorld.resetFood();
+      }
+
     },
     foodCheck: function ( food ) {
       head_pos = this.body[0];
