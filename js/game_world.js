@@ -20,8 +20,8 @@ $(function(){
     // place snake on the grid
     this.snake = new window.App.Snake(this);
     this.food = this.setFoodLocation();
-    this.gameOn = true;
-    this.run();
+    this.gameOn = false;
+    this.showStartGameScreen();
   };
 
   $.extend( GameWorld.prototype, {
@@ -76,14 +76,55 @@ $(function(){
       this.buttonPressed = false;
       this.snake.move();
 
+      console.log(this.gameOn);
       if (this.gameOn) setTimeout('window.App.GameWorld.run()', 100);
+    },
+    startTimer: function() {
+      // start ze timer
+    },
+    showStartGameScreen: function() {
+      var containerWidth = this.boardSize * this.tileSize;
+
+      startGameScreen = $( "<div></div>", {"id": "start-game"} );
+      startGameScreen.css({"width":containerWidth,
+                           "height":containerWidth, 
+                           "top":0,
+                           "left":"50%", 
+                           "margin-top":-containerWidth/2, 
+                           "margin-left":-containerWidth/2});
+
+      startButton = $( "<input />", {"class": "start-button"});
+      startButton.attr("type","button");
+      startButton.attr("value","Start Game");
+      startButton.attr("onClick","window.App.GameWorld.startGame()");
+
+      startGameBox = $( "<div></div>", {"id": "start-game-box"} );
+
+      logoDiv = $( "<div></div>", {"id": "snake-logo"});
+
+      startGameBox.append(logoDiv);
+      startGameBox.append(startButton);
+      startGameScreen.append(startGameBox);
+
+      this.el.append(startGameScreen);
+
+      startGameBox.css({"top":"50%", "margin-top":-startGameBox.height()/2});
+    },
+    hideStartGameScreen: function() {
+      this.el.find("#start-game").hide();
+    },
+    startGame: function() {
+      this.hideStartGameScreen();
+      this.startTimer();
+      this.gameOn = true;
+      this.run();
     },
     endGame: function() {
       this.gameOn = false;
       var containerWidth = this.boardSize * this.tileSize;
       var br = $( "<br />" );
 
-      gameOverScreen = $( "<div></div>", {"class": "game-over"} );
+      gameOverScreen = $( "<div></div>", {"id": "game-over"} );
       gameOverScreen.css({"width":containerWidth,"height":containerWidth, "top":0,"left":"50%", "margin-top":-containerWidth/2, "margin-left":-containerWidth/2});
 
       restartButton = $( "<input />", {"class": "restart-button"});
@@ -91,7 +132,7 @@ $(function(){
       restartButton.attr("value","Restart");
       restartButton.attr("onClick","window.App.GameWorld.restart()");
 
-      gameOverBox = $( "<div></div>", {"class": "game-over-box"} );
+      gameOverBox = $( "<div></div>", {"id": "game-over-box"} );
       gameOverBox.text('Game Over');
 
       gameOverBox.append(br);
