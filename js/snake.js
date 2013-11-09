@@ -72,9 +72,14 @@ $(function(){
       if (new_head_pos.equals(this.gameWorld.food)) {
         this.foodEatenCount++;
         this.body.push(tail_pos); // grow
-        this.gameWorld.resetFood();
+        this.gameWorld.resetFood(new_head_pos);
       }
-
+    },
+    nextHeadPosition: function() {
+      var head_pos = this.body[0];
+      var new_head_pos_x = head_pos.x + this.direction[1];
+      var new_head_pos_y = head_pos.y + this.direction[0];
+      return new Point(new_head_pos_x,new_head_pos_y);
     },
     foodCheck: function ( food ) {
       head_pos = this.body[0];

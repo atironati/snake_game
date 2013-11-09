@@ -19,7 +19,8 @@ $(function(){
     this.setup();
     // place snake on the grid
     this.snake = new window.App.Snake(this);
-    this.food = this.setFoodLocation();
+    this.stats = new window.App.Stats(this.snake);
+    this.food = this.setFoodLocation(this.snake.nextHeadPosition());
     this.gameOn = false;
     this.showStartGameScreen();
   };
@@ -46,10 +47,10 @@ $(function(){
       }
 
     },
-    resetFood: function() {
-      this.food = this.setFoodLocation();
+    resetFood: function(new_head_pos) {
+      this.food = this.setFoodLocation(new_head_pos);
     },
-    setFoodLocation: function() {
+    setFoodLocation: function(new_head_pos) {
       var boardTiles = new Array();
       var count = 0;
       for ( var y=0; y < this.boardSize; y++) {
@@ -66,8 +67,13 @@ $(function(){
         boardTiles.splice(indexToRemove,1);
       });
 
+      // remove new head position
+      var newHeadIndexToRemove = (new_head_pos.y * that.boardSize) + new_head_pos.x;
+      boardTiles.splice(newHeadIndexToRemove,1);
+
       // randomly set food
       var random = Math.floor((Math.random() * boardTiles.length) - 1);
+
       var food_loc = boardTiles[random];
       this.grid[food_loc.y][food_loc.x][0].className = 'food';
       return new Point(food_loc.x,food_loc.y);
@@ -76,11 +82,11 @@ $(function(){
       this.buttonPressed = false;
       this.snake.move();
 
+      this.stats.updateSnakeSize();
+      this.stats.updateFoodCount();
+
       console.log(this.gameOn);
       if (this.gameOn) setTimeout('window.App.GameWorld.run()', 100);
-    },
-    startTimer: function() {
-      // start ze timer
     },
     showStartGameScreen: function() {
       var containerWidth = this.boardSize * this.tileSize;
@@ -108,19 +114,23 @@ $(function(){
 
       this.el.append(startGameScreen);
 
-      startGameBox.css({"top":"50%", "margin-top":-startGameBox.height()/2});
+      var topPosition = (containerWidth/4);
+      startGameBox.css({"top":topPosition});
     },
     hideStartGameScreen: function() {
       this.el.find("#start-game").hide();
     },
     startGame: function() {
       this.hideStartGameScreen();
-      this.startTimer();
+      this.stats.startTimer();
+      this.stats.updateFoodCount();
+      this.stats.updateSnakeSize();
       this.gameOn = true;
       this.run();
     },
     endGame: function() {
       this.gameOn = false;
+      this.stats.stopTimer();
       var containerWidth = this.boardSize * this.tileSize;
       var br = $( "<br />" );
 
@@ -146,6 +156,7 @@ $(function(){
     restart: function() {
       $(".game-board").remove();
       window.App.GameWorld = new GameWorld();
+      window.App.GameWorld.startGame();
     }
   });
 
