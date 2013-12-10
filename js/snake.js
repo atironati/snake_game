@@ -72,7 +72,7 @@ $(function(){
       if (new_head_pos.equals(this.gameWorld.food)) {
         this.foodEatenCount++;
         this.body.push(tail_pos); // grow
-        this.gameWorld.resetFood(new_head_pos);
+        this.gameWorld.resetFood();
       }
     },
     nextHeadPosition: function() {

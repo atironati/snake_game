@@ -47,10 +47,11 @@ $(function(){
       }
 
     },
-    resetFood: function(new_head_pos) {
-      this.food = this.setFoodLocation(new_head_pos);
+    resetFood: function() {
+      this.food = this.setFoodLocation();
     },
-    setFoodLocation: function(new_head_pos) {
+    setFoodLocation: function() {
+      // flatten board
       var boardTiles = new Array();
       var count = 0;
       for ( var y=0; y < this.boardSize; y++) {
@@ -61,21 +62,33 @@ $(function(){
       }
 
       // remove each snake position
+      var indicesToRemove = []
       var that = this;
       $.each(this.snake.body, function(i,val){
         var indexToRemove = (val.y * that.boardSize) + val.x;
-        boardTiles.splice(indexToRemove,1);
+        indicesToRemove[i] = indexToRemove
       });
 
-      // remove new head position
-      var newHeadIndexToRemove = (new_head_pos.y * that.boardSize) + new_head_pos.x;
-      boardTiles.splice(newHeadIndexToRemove,1);
+      var snakeBody = this.snake.body.slice(0) // clone snake body so we can mutate it
+
+      // compute snake body indices and sort in reverse order
+      snakeBody.sort( function(a,b) {
+        var i1 = (a.y * that.boardSize) + a.x;
+        var i2 = (b.y * that.boardSize) + b.x;
+        return i2 - i1;
+      });
+
+      // remove each snake index from boardTiles
+      for (var i = 0; i < snakeBody.length; i++) {
+        var indexToRemove = (snakeBody[i].y * that.boardSize) + snakeBody[i].x;
+        boardTiles.splice(indexToRemove,1);
+      }
 
       // randomly set food
       var random = Math.floor((Math.random() * boardTiles.length) - 1);
-
       var food_loc = boardTiles[random];
       this.grid[food_loc.y][food_loc.x][0].className = 'food';
+
       return new Point(food_loc.x,food_loc.y);
     },
     run: function() {
