@@ -52,9 +52,10 @@ $(function(){
     },
     setFoodLocation: function() {
       var that = this; // reference GameWorld from nested scope
+      var snakeBody = this.snake.body.slice(0) // clone snake body so we can mutate it
 
       // flatten board
-      var boardTiles = new Array();
+      var boardTiles = {};
       var count = 0;
       for ( var y=0; y < this.boardSize; y++) {
         for ( var x=0; x < this.boardSize; x++) {
@@ -63,30 +64,24 @@ $(function(){
         }
       }
 
-      // remove each snake position
-      var indicesToRemove = []
-      $.each(this.snake.body, function(i,val){
-        indicesToRemove[i] = that.flattenedIndex(val);
-      });
-
-      var snakeBody = this.snake.body.slice(0) // clone snake body so we can mutate it
-
-      // compute snake body indices and sort in reverse order
-      snakeBody.sort( function(a,b) {
-        var bodyIndex1 = that.flattenedIndex(a);
-        var bodyIndex2 = that.flattenedIndex(b);
-        return bodyIndex2 - bodyIndex1;
-      });
-
       // remove each snake index from boardTiles
+      // boardTiles is an object so that delete operations are in constant-time
       for (var i = 0; i < snakeBody.length; i++) {
         var indexToRemove = that.flattenedIndex(snakeBody[i]);
-        boardTiles.splice(indexToRemove,1);
+        delete boardTiles[indexToRemove]
+      }
+
+      // convert boardTiles to an array - this makes it easier to randomly index
+      var boardTilesArray = []
+      count = 0
+      for (var key in boardTiles) {
+        boardTilesArray[count] = boardTiles[key]
+        count++;
       }
 
       // randomly set food
-      var random = Math.floor((Math.random() * boardTiles.length) - 1);
-      var food_loc = boardTiles[random];
+      var random   = Math.floor((Math.random() * boardTilesArray.length) - 1);
+      var food_loc = boardTilesArray[random];
       this.grid[food_loc.y][food_loc.x][0].className = 'food';
 
       return new Point(food_loc.x,food_loc.y);
