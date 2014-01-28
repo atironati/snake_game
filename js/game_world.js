@@ -51,6 +51,8 @@ $(function(){
       this.food = this.setFoodLocation();
     },
     setFoodLocation: function() {
+      var that = this; // reference GameWorld from nested scope
+
       // flatten board
       var boardTiles = new Array();
       var count = 0;
@@ -63,24 +65,22 @@ $(function(){
 
       // remove each snake position
       var indicesToRemove = []
-      var that = this;
       $.each(this.snake.body, function(i,val){
-        var indexToRemove = (val.y * that.boardSize) + val.x;
-        indicesToRemove[i] = indexToRemove
+        indicesToRemove[i] = that.flattenedIndex(val);
       });
 
       var snakeBody = this.snake.body.slice(0) // clone snake body so we can mutate it
 
       // compute snake body indices and sort in reverse order
       snakeBody.sort( function(a,b) {
-        var i1 = (a.y * that.boardSize) + a.x;
-        var i2 = (b.y * that.boardSize) + b.x;
-        return i2 - i1;
+        var bodyIndex1 = that.flattenedIndex(a);
+        var bodyIndex2 = that.flattenedIndex(b);
+        return bodyIndex2 - bodyIndex1;
       });
 
       // remove each snake index from boardTiles
       for (var i = 0; i < snakeBody.length; i++) {
-        var indexToRemove = (snakeBody[i].y * that.boardSize) + snakeBody[i].x;
+        var indexToRemove = that.flattenedIndex(snakeBody[i]);
         boardTiles.splice(indexToRemove,1);
       }
 
@@ -90,6 +90,9 @@ $(function(){
       this.grid[food_loc.y][food_loc.x][0].className = 'food';
 
       return new Point(food_loc.x,food_loc.y);
+    },
+    flattenedIndex: function(pt) {
+      return (pt.y * this.boardSize) + pt.x;
     },
     run: function() {
       this.buttonPressed = false;
