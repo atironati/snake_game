@@ -51,7 +51,6 @@ $(function(){
       this.food = this.setFoodLocation();
     },
     setFoodLocation: function() {
-      var that = this; // reference GameWorld from nested scope
       var snakeBody = this.snake.body.slice(0) // clone snake body so we can mutate it
 
       // flatten board
@@ -67,7 +66,7 @@ $(function(){
       // remove each snake index from boardTiles
       // boardTiles is an object so that delete operations are in constant-time
       for (var i = 0; i < snakeBody.length; i++) {
-        var indexToRemove = that.flattenedIndex(snakeBody[i]);
+        var indexToRemove = this.flattenedIndex(snakeBody[i]);
         delete boardTiles[indexToRemove]
       }
 
