@@ -19,7 +19,7 @@ $(function(){
     this.setup();
     // place snake on the grid
     this.snake = new window.App.Snake(this);
-    this.snakeController = new SnakeController(this.snake);
+    this.snakeController = new SnakeController(this.grid, this.snake);
     this.stats = new window.App.Stats(this.snake);
     this.food = this.setFoodLocation(this.snake.nextHeadPosition());
     this.gameOn = false;
