@@ -28,10 +28,9 @@ $(function(){
       this.body[2] = new Point(head_pos,head_pos+2);
     },
     setDirection: function( dir ) {
-      var oppDir = [-dir[0],-dir[1]]
-
-      if (this.direction[0] !== oppDir[0] ||
-          this.direction[1] !== oppDir[1]) {
+      var head = this.body[0];
+      var next = this.grid[head.x + dir[0]][head.y+ dir[1]];
+      if (next[0].className != "snake-square") {
         this.direction = dir;
         return true;
       }
