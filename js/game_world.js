@@ -105,6 +105,20 @@ $(function(){
 
       this.highlightPath(path);
 
+      var nextSquare;
+      var newDirection;
+
+      // If the snake can't find a path to the food, keep going in a safe direction if possible
+      if (path.length == 0) {
+        newDirection = this.snake.safestDirection();
+      } else {
+        nextSquare = path[1];
+        newDirection = [nextSquare[0] - this.snake.body[0].x, nextSquare[1] - this.snake.body[0].y];
+      }
+
+      this.snake.setDirection(newDirection);
+      this.snake.move();
+
       this.stats.updateSnakeSize();
       this.stats.updateFoodCount();
 
