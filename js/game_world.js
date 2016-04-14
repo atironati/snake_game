@@ -213,7 +213,17 @@ $(function(){
       window.App.GameWorld.startGame();
     },
     highlightPath: function(path) {
+      // remove old path first -- inefficient, should change when you have time
+      for ( var x=0; x < this.boardSize; x++) {
+        for ( var y=0; y < this.boardSize; y++) {
+          if(this.grid[x][y][0].className === "ghost-path") {
+            this.grid[x][y][0].className = "empty-square";
+          }
+        }
+      }
+
       var that = this;
+
       path.forEach(function(element, index, array) {
         if((that.snake.body[0].x != element[0] || that.snake.body[0].y != element[1]) &&
         (that.food.x != element[0] || that.food.y != element[1]))
