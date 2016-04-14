@@ -13,7 +13,7 @@ var SnakeController = function( wrld, snek ) {
 	// anything higher than this number is considered blocked
 	// this is handy is you use numbered sprites, more than one
 	// of which is walkable road, grass, mud, etc
-	var walkableTiles = ["empty-square", "food"];
+	var unwalkableTiles = ["snake-square", "snake-head-square"];
 
 	// keep track of the world dimensions
 	// Note that this A-star implementation expects the world array to be square: 
@@ -26,7 +26,7 @@ var SnakeController = function( wrld, snek ) {
 	// which heuristic should we use?
 	// default: no diagonals (Manhattan)
 	var distanceFunction = ManhattanDistance;
-	var findNeighbours = DiagonalNeighbours;
+	var findNeighbours = function(){}; // empty;
 
     // Used in the calculatePath function to store route costs, etc.
     function Node(Parent, Point)
@@ -103,7 +103,7 @@ var SnakeController = function( wrld, snek ) {
   function canWalkHere(x, y) {
       return ((that.world[x] != null) &&
           (that.world[x][y] != null) &&
-          (walkableTiles.includes(that.world[x][y][0].className)));
+          (!unwalkableTiles.includes(that.world[x][y][0].className)));
   };
 
     // Path function, executes AStar algorithm operations
