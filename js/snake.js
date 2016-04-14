@@ -94,6 +94,28 @@ $(function(){
 
       return false;
     },
+    safestDirection: function() {
+      var returnDir = this.direction;
+      var possibleDirections = [[-1,0],
+                                [0,-1],
+                                [1,0],
+                                [0,1]];
+      var that = this;
+
+      // If we aren't going to die next turn, keep going that way, otherwise choose a new direction
+      if(this.deathCheck(this.nextHeadPosition())) {
+        var maybeSafeDir = possibleDirections.forEach(function(possibleDir) {
+          var possibleNextHeadPosition = that.nextHeadPositionWithDirection(possibleDir);
+          if (!that.deathCheck(possibleNextHeadPosition)) {
+            returnDir = possibleDir;
+          }
+        })
+
+        return returnDir;
+      } else {
+        return returnDir;
+      }
+    },
     foodCheck: function ( food ) {
       var head_pos = this.body[0];
 
