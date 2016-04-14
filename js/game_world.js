@@ -1,10 +1,10 @@
 $(function(){
 
   var GameWorld = function( ) {
-    this.directions = {37:[0,-1],
-                       38:[-1,0],
-                       39:[0,1],
-                       40:[1,0]}
+    this.directions = {37:[-1,0],
+                       38:[0,-1],
+                       39:[1,0],
+                       40:[0,1]};
     this.gameOn = false;
     this.buttonPressed = false;
     this.boardSize = 20;
@@ -33,14 +33,14 @@ $(function(){
       this.el.appendTo($("#main"));
       var br = $( "<br />" );
 
-      for ( var i=0; i < this.boardSize; i++) {
+      for ( var y=0; y < this.boardSize; y++) {
         var row = $( "<div></div>", {"class": "board-row"} );
         row.css({"width":containerWidth, "height":this.tileSize});
-        for ( var j=0; j < this.boardSize; j++) {
+        for ( var x=0; x < this.boardSize; x++) {
           var gamePiece = $( "<div></div>", {"class": "empty-square"} );
           gamePiece.css({"width":this.tileSize-1,"height":this.tileSize-1});
           row.append( gamePiece );
-          this.grid[i][j] = gamePiece;
+          this.grid[x][y] = gamePiece;
         }
         br.appendTo( row );
         row.appendTo( this.el );
@@ -81,7 +81,7 @@ $(function(){
       // randomly set food
       var random   = Math.floor((Math.random() * boardTilesArray.length) - 1);
       var food_loc = boardTilesArray[random];
-      this.grid[food_loc.y][food_loc.x][0].className = 'food';
+      this.grid[food_loc.x][food_loc.y][0].className = 'food';
 
       return new Point(food_loc.x,food_loc.y);
     },
@@ -176,7 +176,7 @@ $(function(){
     var buttonPressed = gameWorld.buttonPressed;
     var snake = gameWorld.snake;
 
-    if (!buttonPressed && directions[e.keyCode]) {
+    if (directions[e.keyCode]) {
       gameWorld.buttonPressed = snake.setDirection(directions[e.keyCode]);
     }
 
