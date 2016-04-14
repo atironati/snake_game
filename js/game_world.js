@@ -101,7 +101,9 @@ $(function(){
     },
     runAi: function() {
       this.buttonPressed = false;
-      this.snakeController.findPath();
+      var path = this.snakeController.findPath(this.snake.body[0], this.food);
+
+      this.highlightPath(path);
 
       this.stats.updateSnakeSize();
       this.stats.updateFoodCount();
@@ -195,6 +197,14 @@ $(function(){
       $(".game-board").remove();
       window.App.GameWorld = new GameWorld();
       window.App.GameWorld.startGame();
+    },
+    highlightPath: function(path) {
+      var that = this;
+      path.forEach(function(element, index, array) {
+        if((that.snake.body[0].x != element[0] || that.snake.body[0].y != element[1]) &&
+        (that.food.x != element[0] || that.food.y != element[1]))
+         that.grid[element[0]][element[1]][0].className = "ghost-path";
+      });
     }
   });
 
