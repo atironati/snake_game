@@ -7,7 +7,7 @@ $(function(){
                        40:[0,1]};
     this.gameOn = false;
     this.buttonPressed = false;
-    this.boardSize = 20;
+    this.boardSize = 40;
     this.tileSize = 20;
 
     // Initialize grid array
@@ -19,6 +19,7 @@ $(function(){
     this.setup();
     // place snake on the grid
     this.snake = new window.App.Snake(this);
+    this.snakeController = new SnakeController(this.snake);
     this.stats = new window.App.Stats(this.snake);
     this.food = this.setFoodLocation(this.snake.nextHeadPosition());
     this.gameOn = false;
@@ -98,6 +99,16 @@ $(function(){
       console.log(this.gameOn);
       if (this.gameOn) setTimeout('window.App.GameWorld.run()', 100);
     },
+    runAi: function() {
+      this.buttonPressed = false;
+      this.snakeController.findPath();
+
+      this.stats.updateSnakeSize();
+      this.stats.updateFoodCount();
+
+      console.log(this.gameOn);
+      if (this.gameOn) setTimeout('window.App.GameWorld.runAi()', 100);
+    },
     showStartGameScreen: function() {
       var containerWidth = this.boardSize * this.tileSize;
 
@@ -114,12 +125,20 @@ $(function(){
       startButton.attr("value","Start Game");
       startButton.attr("onClick","window.App.GameWorld.startGame()");
 
+      startAiButton = $( "<input />", {"class": "start-ai-button"});
+      startAiButton.attr("type","button");
+      startAiButton.attr("value","Start AI Simulator");
+      startAiButton.attr("onClick","window.App.GameWorld.startAiSim()");
+
       startGameBox = $( "<div></div>", {"id": "start-game-box"} );
 
       logoDiv = $( "<div></div>", {"id": "snake-logo"});
+      br = $( "<br />" );
 
       startGameBox.append(logoDiv);
       startGameBox.append(startButton);
+      startGameBox.append(br);
+      startGameBox.append(startAiButton);
       startGameScreen.append(startGameBox);
 
       this.el.append(startGameScreen);
@@ -127,6 +146,7 @@ $(function(){
       var topPosition = (containerWidth/4);
       startGameBox.css({"top":topPosition});
     },
+
     hideStartGameScreen: function() {
       this.el.find("#start-game").hide();
     },
@@ -137,6 +157,14 @@ $(function(){
       this.stats.updateSnakeSize();
       this.gameOn = true;
       this.run();
+    },
+    startAiSim: function() {
+      this.hideStartGameScreen();
+      this.stats.startTimer();
+      this.stats.updateFoodCount();
+      this.stats.updateSnakeSize();
+      this.gameOn = true;
+      this.runAi();
     },
     endGame: function() {
       this.gameOn = false;
