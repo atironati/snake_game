@@ -1,6 +1,6 @@
 $(function(){
 
-  var Snake = function( gw, initial_head_pos, color, name, snake_control, highlight_path ) {
+  var Snake = function( gw, initial_head_pos, color, name, snake_control, highlight_path, endGameWhenDead) {
     this.body = new Array(3);
     for (var i=0; i < 3; i++){
       this.body[i] = new Array(2);
@@ -12,6 +12,8 @@ $(function(){
     this.color = color;
     this.headColor = color + "-head";
     this.name = name;
+    this.endGameWhenDead = endGameWhenDead;
+    this.dead = false;
     
     this.direction = [0, -1];
     this.foodEatenCount = 0;
@@ -31,7 +33,7 @@ $(function(){
       var head = this.body[0];
       var x_delta = head.x + dir[0];
       var y_delta = head.y+ dir[1];
-      
+
       if (x_delta < this.grid.length && y_delta < this.grid[0].length) {
         var next = this.grid[x_delta][y_delta];
         if (!next[0].className.split(" ").includes("snake-square")) {
@@ -43,6 +45,8 @@ $(function(){
       return false;
     },
     runSnakeController: function(food) {
+      if(this.dead) return;
+
       var path = this.snakeController.findPath(this.body[0], food);
 
       if (this.highlightPath) {
@@ -64,6 +68,8 @@ $(function(){
       this.move();
     },
     move: function() {
+      if(this.dead) return;
+
       var head_pos = this.body[0];
       var tail_pos = this.body.pop();
       var new_head_pos_x = head_pos.x + this.direction[0];
@@ -76,7 +82,14 @@ $(function(){
       // set old head to regular body part
       this.grid[head_pos.x][head_pos.y][0].className = "snake-square " + this.color;
 
-      if(this.worldEndingDeathCheck(new_head_pos)) return;
+      if(this.endGameWhenDead) {
+        if(this.worldEndingDeathCheck(new_head_pos)) return;
+      } else {
+        if(this.deathCheck(new_head_pos)) {
+          this.dead=true;
+          return;
+        }
+      }
 
       // draw the head in its new position
       this.grid[new_head_pos.x][new_head_pos.y][0].className = "snake-head-square " + this.headColor;
