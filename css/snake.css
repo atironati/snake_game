@@ -144,6 +144,20 @@ body {
   font-size: 20pt;
 }
 
+#game-win {
+  background: url('../img/game-start-bg.png');
+  position: absolute;
+  text-align: center;
+  z-index: 100;
+}
+
+#game-win-box {
+  position: relative;
+  color: black;
+  font-family: sans-serif;
+  font-size: 20pt;
+}
+
 .start-button {
   font-size: 15pt;
 }
