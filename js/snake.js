@@ -1,6 +1,6 @@
 $(function(){
 
-  var Snake = function( gw, initial_head_pos, color, snake_control, highlight_path ) {
+  var Snake = function( gw, initial_head_pos, color, name, snake_control, highlight_path ) {
     this.body = new Array(3);
     for (var i=0; i < 3; i++){
       this.body[i] = new Array(2);
@@ -11,6 +11,7 @@ $(function(){
     this.highlightPath = highlight_path;
     this.color = color;
     this.headColor = color + "-head";
+    this.name = name;
     
     this.direction = [0, -1];
     this.foodEatenCount = 0;
@@ -40,7 +41,7 @@ $(function(){
       var path = this.snakeController.findPath(this.body[0], food);
 
       if (this.highlightPath) {
-        this.gameWorld.highlightPath(path);
+        this.gameWorld.highlightPath(this, path);
       }
 
       var nextSquare;
