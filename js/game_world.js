@@ -188,22 +188,22 @@ $(function(){
                            "margin-top":-containerWidth/2, 
                            "margin-left":-containerWidth/2});
 
-      startButton = $( "<input />", {"class": "start-button"});
+      startButton = $( "<input />", {"id": "start-button", "class" : "menu-button"});
       startButton.attr("type","button");
       startButton.attr("value","Start Game");
       startButton.attr("onClick","window.App.GameWorld.startGame()");
 
-      startAiButton = $( "<input />", {"class": "start-ai-button"});
+      startAiButton = $( "<input />", {"id": "start-ai-button", "class" : "menu-button"});
       startAiButton.attr("type","button");
       startAiButton.attr("value","Start AI Simulator");
       startAiButton.attr("onClick","window.App.GameWorld.startAiSim()");
 
-      aiBattleButton = $( "<input />", {"class": "ai-battle-button"});
+      aiBattleButton = $( "<input />", {"id": "ai-battle-button", "class" : "menu-button"});
       aiBattleButton.attr("type","button");
       aiBattleButton.attr("value","Start AI Battle");
       aiBattleButton.attr("onClick","window.App.GameWorld.startAiBattle()");
 
-      aiSnakePitButton = $( "<input />", {"class": "ai-snake-pit-button"});
+      aiSnakePitButton = $( "<input />", {"id": "ai-snake-pit-button", "class" : "menu-button"});
       aiSnakePitButton.attr("type","button");
       aiSnakePitButton.attr("value","Enter the AI Snake Pit");
       aiSnakePitButton.attr("onClick","window.App.GameWorld.startAiSnakePit()");
@@ -327,7 +327,7 @@ $(function(){
       gameWinScreen = $( "<div></div>", {"id": "game-win"} );
       gameWinScreen.css({"width":containerWidth,"height":containerWidth, "top":0,"left":"50%", "margin-top":-containerWidth/2, "margin-left":-containerWidth/2});
 
-      mainMenuButton = $( "<input />", {"class": "main-menu-button"});
+      mainMenuButton = $( "<input />", {"id": "main-menu-button", "class": "menu-button"});
       mainMenuButton.attr("type","button");
       mainMenuButton.attr("value","Main Menu");
       mainMenuButton.attr("onClick","window.App.GameWorld.mainMenu()");
@@ -340,7 +340,7 @@ $(function(){
       gameWinBox = $( "<div></div>", {"id": "game-win-box"} );
       gameWinBox.append('Game Win');
       gameWinBox.append(br.clone());
-      gameWinBox.append('Winner : ' + winner.color + ' Snake');
+      gameWinBox.append('Winner : ' + this.capitalizeFirstLetter(winner.color) + ' Snake');
       gameWinBox.append(br.clone());
 
       gameWinBox.append(br.clone());
@@ -363,12 +363,12 @@ $(function(){
       gameOverScreen = $( "<div></div>", {"id": "game-over"} );
       gameOverScreen.css({"width":containerWidth,"height":containerWidth, "top":0,"left":"50%", "margin-top":-containerWidth/2, "margin-left":-containerWidth/2});
 
-      mainMenuButton = $( "<input />", {"class": "main-menu-button"});
+      mainMenuButton = $( "<input />", {"id": "main-menu-button", "class": "menu-button"});
       mainMenuButton.attr("type","button");
       mainMenuButton.attr("value","Main Menu");
       mainMenuButton.attr("onClick","window.App.GameWorld.mainMenu()");
 
-      restartButton = $( "<input />", {"class": "restart-button"});
+      restartButton = $( "<input />", {"id": "restart-button", "class": "menu-button"});
       restartButton.attr("type","button");
       restartButton.attr("value","Restart");
       restartButton.attr("onClick","window.App.GameWorld.restart()");
@@ -437,7 +437,10 @@ $(function(){
           this.grid[x][y][0].className = "empty-square";
         }
       }
-    }
+    },
+    capitalizeFirstLetter: function (string) {
+      return string.charAt(0).toUpperCase() + string.slice(1);
+    },
   });
 
   $(document).keydown(function(e){
