@@ -273,7 +273,9 @@ $(function(){
       var snake2 = new window.App.Snake(this, s2_head_pos, "blue", "mean-snek", this.snakeController, true, true);
       this.aiSnakes.push(snake2);
 
+      this.stats.stopTimer();
       this.stats = new window.App.Stats(this.snake);
+      this.stats.startTimer();
       this.food = this.setFoodLocation();
 
       this.runAiBattle();
@@ -284,7 +286,6 @@ $(function(){
       this.clearGrid();
 
       this.hideStartGameScreen();
-      this.stats.startTimer();
       //this.stats.updateFoodCount();
       //this.stats.updateSnakeSize();
       this.gameOn = true;
@@ -308,7 +309,10 @@ $(function(){
       this.aiSnakes.push(snake3);
       this.aiSnakes.push(snake4);
 
-      //this.stats = new window.App.Stats(this.snake);
+      this.stats.stopTimer();
+      this.stats = new window.App.Stats(this.snake);
+      this.stats.startTimer();
+
       //this.food = this.setFoodLocation();
 
       this.runAiSnakePit();
@@ -350,6 +354,7 @@ $(function(){
       gameWinBox.css({"top":"50%", "margin-top":-gameWinBox.height()/2});
     },
     endGame: function() {
+      this.stats.stopTimer();
       this.gameOn = false;
       this.stats.stopTimer();
       var containerWidth = this.boardSize * this.tileSize;
@@ -387,7 +392,15 @@ $(function(){
     },
     restart: function() {
       $(".game-board").remove();
+      this.clearGrid();
+      this.stats.clearTimer();
+
+      this.aiSnakes.forEach(function(aiSnake) {
+        delete aiSnake;
+      });
+
       window.App.GameWorld = new GameWorld();
+
       if (this.currentGameMode === "single_player") {
         window.App.GameWorld.startGame();
       } else if (this.currentGameMode === "ai_simluator") {
