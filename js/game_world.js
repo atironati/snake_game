@@ -141,6 +141,18 @@ $(function(){
 
       if (this.gameOn) setTimeout('window.App.GameWorld.runAiBattle()', 100);
     },
+    runAiSnakePit: function() {
+      this.buttonPressed = false;
+
+      //this.snake.move(this.food);
+
+      var that = this;
+      this.aiSnakes.forEach(function(aiSnake) {
+        aiSnake.runSnakeController(that.food);
+      });
+
+      if (this.gameOn) setTimeout('window.App.GameWorld.runAiSnakePit()', 100);
+    },
     showStartGameScreen: function() {
       var containerWidth = this.boardSize * this.tileSize;
 
@@ -167,6 +179,11 @@ $(function(){
       aiBattleButton.attr("value","Start AI Battle");
       aiBattleButton.attr("onClick","window.App.GameWorld.startAiBattle()");
 
+      aiSnakePitButton = $( "<input />", {"class": "ai-snake-pit-button"});
+      aiSnakePitButton.attr("type","button");
+      aiSnakePitButton.attr("value","Enter the AI Snake Pit");
+      aiSnakePitButton.attr("onClick","window.App.GameWorld.startAiSnakePit()");
+
       startGameBox = $( "<div></div>", {"id": "start-game-box"} );
 
       logoDiv = $( "<div></div>", {"id": "snake-logo"});
@@ -178,6 +195,8 @@ $(function(){
       startGameBox.append(startAiButton);
       startGameBox.append(br.clone());
       startGameBox.append(aiBattleButton);
+      startGameBox.append(br.clone());
+      startGameBox.append(aiSnakePitButton);
 
       startGameScreen.append(startGameBox);
 
@@ -234,6 +253,41 @@ $(function(){
       this.food = this.setFoodLocation();
 
       this.runAiBattle();
+    },
+    startAiSnakePit: function() {
+      this.currentGameMode = "ai_snake_pit";
+
+      this.clearGrid();
+
+      this.hideStartGameScreen();
+      this.stats.startTimer();
+      //this.stats.updateFoodCount();
+      //this.stats.updateSnakeSize();
+      this.gameOn = true;
+
+      var board_center = Math.round(this.boardSize / 2);
+      var quarter_board = Math.round(board_center / 2);
+      var eigth_board = Math.round(quarter_board / 2);
+
+      this.snake = undefined; 
+      var s1_head_pos = new Point(quarter_board,quarter_board);
+      var s2_head_pos = new Point(quarter_board+eigth_board,quarter_board);
+      var s3_head_pos = new Point(eigth_board,quarter_board);
+      var s4_head_pos = new Point(quarter_board+eigth_board,quarter_board);
+
+      var snake1 = new window.App.Snake(this, s1_head_pos, "green", "harry", this.snakeController, true);
+      var snake2 = new window.App.Snake(this, s2_head_pos, "blue", "larry", this.snakeController, true);
+      var snake3 = new window.App.Snake(this, s3_head_pos, "red", "jerry", this.snakeController, true);
+      var snake4 = new window.App.Snake(this, s4_head_pos, "orange", "phillip", this.snakeController, true);
+      this.aiSnakes.push(snake1);
+      this.aiSnakes.push(snake2);
+      this.aiSnakes.push(snake3);
+      this.aiSnakes.push(snake4);
+
+      //this.stats = new window.App.Stats(this.snake);
+      //this.food = this.setFoodLocation();
+
+      this.runAiSnakePit();
     },
     endGame: function() {
       this.gameOn = false;
