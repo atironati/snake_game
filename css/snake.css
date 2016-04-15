@@ -65,7 +65,27 @@ body {
 }
 
 .yellow-head {
-  background: #ffff00;
+  background: #7f7f00;
+}
+
+.purple-head {
+  background: #2a0d45;
+}
+
+.pink-head {
+  background: #cc5490;
+}
+
+.brown-head {
+  background: #614126;
+}
+
+.aquamarine-head {
+  background: #4c997f;
+}
+
+.olive-head {
+  background: #6b8322;
 }
 
 .snake-square {
@@ -91,7 +111,27 @@ body {
 }
 
 .yellow {
-  background: yellow;
+  background: #b2b200;
+}
+
+.purple {
+  background: purple;
+}
+
+.pink {
+  background: pink;
+}
+
+.brown {
+  background: brown;
+}
+
+.aquamarine {
+  background: #7fffd4;
+}
+
+.olive {
+  background: #b3ee3a;
 }
 
 .food {
