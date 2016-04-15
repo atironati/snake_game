@@ -25,7 +25,7 @@ $(function(){
     var head_pos = new Point(board_center,board_center);
 
     this.snakeController = new SnakeController(this.grid);
-    this.snake = new window.App.Snake(this, head_pos, "green", this.snakeController, true);
+    this.snake = new window.App.Snake(this, head_pos, "green", "snek", this.snakeController, true, true);
 
     this.aiSnakes = [];
 
@@ -72,7 +72,9 @@ $(function(){
         }
       }
 
-      this.removeSnakeSquaresFromGrid(this.snake, boardTiles);
+      if (!(this.snake === undefined)) {
+        this.removeSnakeSquaresFromGrid(this.snake, boardTiles);
+      }
 
       var that = this;
       this.aiSnakes.forEach(function(aiSnake) {
@@ -90,6 +92,10 @@ $(function(){
       // randomly set food
       var random   = Math.floor((Math.random() * boardTilesArray.length) - 1);
       var food_loc = boardTilesArray[random];
+      if (food_loc === undefined) {
+        random   = Math.floor((Math.random() * boardTilesArray.length) - 1);
+        food_loc = boardTilesArray[random];
+      }
       this.grid[food_loc.x][food_loc.y][0].className = 'food';
 
       return new Point(food_loc.x,food_loc.y);
@@ -137,7 +143,39 @@ $(function(){
         aiSnake.runSnakeController(that.food);
       });
 
-      if (this.gameOn) setTimeout('window.App.GameWorld.runAiBattle()', 100);
+      if (this.gameOn) setTimeout('window.App.GameWorld.runAiBattle()', 80);
+    },
+    runAiSnakePit: function() {
+      this.buttonPressed = false;
+
+      //this.snake.move(this.food);
+
+      var that = this;
+      this.aiSnakes.forEach(function(aiSnake) {
+        aiSnake.runSnakeController(that.food);
+      });
+
+      var deadSnakes = 0;
+      var winner;
+      this.aiSnakes.forEach(function(aiSnake) {
+        if(aiSnake.dead) {
+          deadSnakes += 1;
+        } else {
+          winner = aiSnake;
+        }
+      });
+
+      if ((this.aiSnakes.length - deadSnakes) === 1) {
+        this.winGame(winner);
+        return;
+      }
+
+      if ((this.aiSnakes.length - deadSnakes) === 0) {
+        this.winGame();
+        return;
+      }
+
+      if (this.gameOn) setTimeout('window.App.GameWorld.runAiSnakePit()', 20);
     },
     showStartGameScreen: function() {
       var containerWidth = this.boardSize * this.tileSize;
@@ -150,20 +188,25 @@ $(function(){
                            "margin-top":-containerWidth/2, 
                            "margin-left":-containerWidth/2});
 
-      startButton = $( "<input />", {"class": "start-button"});
+      startButton = $( "<input />", {"id": "start-button", "class" : "menu-button"});
       startButton.attr("type","button");
       startButton.attr("value","Start Game");
       startButton.attr("onClick","window.App.GameWorld.startGame()");
 
-      startAiButton = $( "<input />", {"class": "start-ai-button"});
+      startAiButton = $( "<input />", {"id": "start-ai-button", "class" : "menu-button"});
       startAiButton.attr("type","button");
       startAiButton.attr("value","Start AI Simulator");
       startAiButton.attr("onClick","window.App.GameWorld.startAiSim()");
 
-      aiBattleButton = $( "<input />", {"class": "ai-battle-button"});
+      aiBattleButton = $( "<input />", {"id": "ai-battle-button", "class" : "menu-button"});
       aiBattleButton.attr("type","button");
       aiBattleButton.attr("value","Start AI Battle");
       aiBattleButton.attr("onClick","window.App.GameWorld.startAiBattle()");
+
+      aiSnakePitButton = $( "<input />", {"id": "ai-snake-pit-button", "class" : "menu-button"});
+      aiSnakePitButton.attr("type","button");
+      aiSnakePitButton.attr("value","Enter the AI Snake Pit");
+      aiSnakePitButton.attr("onClick","window.App.GameWorld.startAiSnakePit()");
 
       startGameBox = $( "<div></div>", {"id": "start-game-box"} );
 
@@ -176,6 +219,8 @@ $(function(){
       startGameBox.append(startAiButton);
       startGameBox.append(br.clone());
       startGameBox.append(aiBattleButton);
+      startGameBox.append(br.clone());
+      startGameBox.append(aiSnakePitButton);
 
       startGameScreen.append(startGameBox);
 
@@ -224,16 +269,92 @@ $(function(){
       var s1_head_pos = new Point(quarter_board,board_center);
       var s2_head_pos = new Point(quarter_board+eigth_board,board_center);
 
-      this.snake = new window.App.Snake(this, s1_head_pos, "green", this.snakeController, true);
-      var snake2 = new window.App.Snake(this, s2_head_pos, "blue", this.snakeController, true);
+      this.snake = new window.App.Snake(this, s1_head_pos, "green", "snek", this.snakeController, true, true);
+      var snake2 = new window.App.Snake(this, s2_head_pos, "blue", "mean-snek", this.snakeController, true, true);
       this.aiSnakes.push(snake2);
 
+      this.stats.stopTimer();
       this.stats = new window.App.Stats(this.snake);
+      this.stats.startTimer();
       this.food = this.setFoodLocation();
 
       this.runAiBattle();
     },
+    startAiSnakePit: function() {
+      this.currentGameMode = "ai_snake_pit";
+
+      this.clearGrid();
+
+      this.hideStartGameScreen();
+      //this.stats.updateFoodCount();
+      //this.stats.updateSnakeSize();
+      this.gameOn = true;
+
+      var board_center = Math.round(this.boardSize / 2);
+      var quarter_board = Math.round(board_center / 2);
+      var eigth_board = Math.round(quarter_board / 2);
+
+      this.snake = undefined; 
+      var s1_head_pos = new Point(quarter_board,quarter_board);
+      var s2_head_pos = new Point(quarter_board+eigth_board,quarter_board);
+      var s3_head_pos = new Point(eigth_board,quarter_board);
+      var s4_head_pos = new Point(quarter_board+eigth_board,quarter_board);
+
+      var snake1 = new window.App.Snake(this, s1_head_pos, "green", "harry", this.snakeController, true, false);
+      var snake2 = new window.App.Snake(this, s2_head_pos, "blue", "larry", this.snakeController, true, false);
+      var snake3 = new window.App.Snake(this, s3_head_pos, "red", "jerry", this.snakeController, true, false);
+      var snake4 = new window.App.Snake(this, s4_head_pos, "orange", "phillip", this.snakeController, true, false);
+      this.aiSnakes.push(snake1);
+      this.aiSnakes.push(snake2);
+      this.aiSnakes.push(snake3);
+      this.aiSnakes.push(snake4);
+
+      this.stats.stopTimer();
+      this.stats = new window.App.Stats(this.snake);
+      this.stats.startTimer();
+
+      //this.food = this.setFoodLocation();
+
+      this.runAiSnakePit();
+    },
+    winGame: function(winner) {
+      this.stats.stopTimer();
+      this.gameOn = false;
+      this.stats.stopTimer();
+      var containerWidth = this.boardSize * this.tileSize;
+      var br = $( "<br />" );
+
+      gameWinScreen = $( "<div></div>", {"id": "game-win"} );
+      gameWinScreen.css({"width":containerWidth,"height":containerWidth, "top":0,"left":"50%", "margin-top":-containerWidth/2, "margin-left":-containerWidth/2});
+
+      mainMenuButton = $( "<input />", {"id": "main-menu-button", "class": "menu-button"});
+      mainMenuButton.attr("type","button");
+      mainMenuButton.attr("value","Main Menu");
+      mainMenuButton.attr("onClick","window.App.GameWorld.mainMenu()");
+
+      restartButton = $( "<input />", {"class": "restart-button"});
+      restartButton.attr("type","button");
+      restartButton.attr("value","Restart");
+      restartButton.attr("onClick","window.App.GameWorld.restart()");
+
+      gameWinBox = $( "<div></div>", {"id": "game-win-box"} );
+      gameWinBox.append('Game Win');
+      gameWinBox.append(br.clone());
+      gameWinBox.append('Winner : ' + this.capitalizeFirstLetter(winner.color) + ' Snake');
+      gameWinBox.append(br.clone());
+
+      gameWinBox.append(br.clone());
+      gameWinBox.append(mainMenuButton);
+      gameWinBox.append(br.clone());
+      gameWinBox.append(restartButton);
+      gameWinScreen.append(gameWinBox);
+
+      this.el.append(gameWinScreen);
+
+      gameWinBox.css({"top":"50%", "margin-top":-gameWinBox.height()/2});
+    },
     endGame: function() {
+      this.stats.stopTimer();
       this.gameOn = false;
       this.stats.stopTimer();
       var containerWidth = this.boardSize * this.tileSize;
@@ -242,12 +363,12 @@ $(function(){
       gameOverScreen = $( "<div></div>", {"id": "game-over"} );
       gameOverScreen.css({"width":containerWidth,"height":containerWidth, "top":0,"left":"50%", "margin-top":-containerWidth/2, "margin-left":-containerWidth/2});
 
-      mainMenuButton = $( "<input />", {"class": "main-menu-button"});
+      mainMenuButton = $( "<input />", {"id": "main-menu-button", "class": "menu-button"});
       mainMenuButton.attr("type","button");
       mainMenuButton.attr("value","Main Menu");
       mainMenuButton.attr("onClick","window.App.GameWorld.mainMenu()");
 
-      restartButton = $( "<input />", {"class": "restart-button"});
+      restartButton = $( "<input />", {"id": "restart-button", "class": "menu-button"});
       restartButton.attr("type","button");
       restartButton.attr("value","Restart");
       restartButton.attr("onClick","window.App.GameWorld.restart()");
@@ -271,20 +392,32 @@ $(function(){
     },
     restart: function() {
       $(".game-board").remove();
+      this.clearGrid();
+      this.stats.clearTimer();
+
+      this.aiSnakes.forEach(function(aiSnake) {
+        delete aiSnake;
+      });
+
       window.App.GameWorld = new GameWorld();
+
       if (this.currentGameMode === "single_player") {
         window.App.GameWorld.startGame();
       } else if (this.currentGameMode === "ai_simluator") {
         window.App.GameWorld.startAiSim();
       } else if (this.currentGameMode === "ai_battle") {
         window.App.GameWorld.startAiBattle();
+      } else if (this.currentGameMode === "ai_snake_pit") {
+        window.App.GameWorld.startAiSnakePit();
       }
     },
-    highlightPath: function(path) {
+    highlightPath: function(snake, path) {
       // remove old path first -- inefficient, should change when you have time
       for ( var x=0; x < this.boardSize; x++) {
         for ( var y=0; y < this.boardSize; y++) {
-          if(this.grid[x][y][0].className === "ghost-path") {
+          // uncomment this for some wacky fun
+          //if(this.grid[x][y][0].className === snake.name+"-ghost-path") {
+          if(this.grid[x][y][0].className.split(" ").includes(snake.name+"-ghost-path")) {
             this.grid[x][y][0].className = "empty-square";
           }
         }
@@ -293,9 +426,9 @@ $(function(){
       var that = this;
 
       path.forEach(function(element, index, array) {
-        if((that.snake.body[0].x != element[0] || that.snake.body[0].y != element[1]) &&
+        if((snake.body[0].x != element[0] || snake.body[0].y != element[1]) &&
         (that.food.x != element[0] || that.food.y != element[1]))
-         that.grid[element[0]][element[1]][0].className = "ghost-path";
+         that.grid[element[0]][element[1]][0].className = snake.name+"-ghost-path ghost-path";
       });
     },
     clearGrid: function() {
@@ -304,7 +437,10 @@ $(function(){
           this.grid[x][y][0].className = "empty-square";
         }
       }
-    }
+    },
+    capitalizeFirstLetter: function (string) {
+      return string.charAt(0).toUpperCase() + string.slice(1);
+    },
   });
 
   $(document).keydown(function(e){
