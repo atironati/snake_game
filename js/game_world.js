@@ -143,7 +143,7 @@ $(function(){
         aiSnake.runSnakeController(that.food);
       });
 
-      if (this.gameOn) setTimeout('window.App.GameWorld.runAiBattle()', 100);
+      if (this.gameOn) setTimeout('window.App.GameWorld.runAiBattle()', 80);
     },
     runAiSnakePit: function() {
       this.buttonPressed = false;
@@ -155,7 +155,27 @@ $(function(){
         aiSnake.runSnakeController(that.food);
       });
 
-      if (this.gameOn) setTimeout('window.App.GameWorld.runAiSnakePit()', 50);
+      var deadSnakes = 0;
+      var winner;
+      this.aiSnakes.forEach(function(aiSnake) {
+        if(aiSnake.dead) {
+          deadSnakes += 1;
+        } else {
+          winner = aiSnake;
+        }
+      });
+
+      if ((this.aiSnakes.length - deadSnakes) === 1) {
+        this.winGame(winner);
+        return;
+      }
+
+      if ((this.aiSnakes.length - deadSnakes) === 0) {
+        this.winGame();
+        return;
+      }
+
+      if (this.gameOn) setTimeout('window.App.GameWorld.runAiSnakePit()', 20);
     },
     showStartGameScreen: function() {
       var containerWidth = this.boardSize * this.tileSize;
@@ -292,6 +312,42 @@ $(function(){
       //this.food = this.setFoodLocation();
 
       this.runAiSnakePit();
+    },
+    winGame: function(winner) {
+      this.stats.stopTimer();
+      this.gameOn = false;
+      this.stats.stopTimer();
+      var containerWidth = this.boardSize * this.tileSize;
+      var br = $( "<br />" );
+
+      gameWinScreen = $( "<div></div>", {"id": "game-win"} );
+      gameWinScreen.css({"width":containerWidth,"height":containerWidth, "top":0,"left":"50%", "margin-top":-containerWidth/2, "margin-left":-containerWidth/2});
+
+      mainMenuButton = $( "<input />", {"class": "main-menu-button"});
+      mainMenuButton.attr("type","button");
+      mainMenuButton.attr("value","Main Menu");
+      mainMenuButton.attr("onClick","window.App.GameWorld.mainMenu()");
+
+      restartButton = $( "<input />", {"class": "restart-button"});
+      restartButton.attr("type","button");
+      restartButton.attr("value","Restart");
+      restartButton.attr("onClick","window.App.GameWorld.restart()");
+
+      gameWinBox = $( "<div></div>", {"id": "game-win-box"} );
+      gameWinBox.append('Game Win');
+      gameWinBox.append(br.clone());
+      gameWinBox.append('Winner : ' + winner.color + ' Snake');
+      gameWinBox.append(br.clone());
+
+      gameWinBox.append(br.clone());
+      gameWinBox.append(mainMenuButton);
+      gameWinBox.append(br.clone());
+      gameWinBox.append(restartButton);
+      gameWinScreen.append(gameWinBox);
+
+      this.el.append(gameWinScreen);
+
+      gameWinBox.css({"top":"50%", "margin-top":-gameWinBox.height()/2});
     },
     endGame: function() {
       this.gameOn = false;
