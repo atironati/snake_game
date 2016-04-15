@@ -1,6 +1,5 @@
-var SnakeController = function( wrld, snek ) {
+var SnakeController = function( wrld ) {
   this.world = wrld;
-  this.snake = snek;
 
   // shortcuts for speed
   var abs = Math.abs;
