@@ -1,28 +1,28 @@
 $(function(){
 
-  var Snake = function( gw ) {
+  var Snake = function( gw, initial_head_pos, snake_control, highlight_path ) {
     this.body = new Array(3);
     for (var i=0; i < 3; i++){
       this.body[i] = new Array(2);
     }
     this.gameWorld = gw;
     this.grid = this.gameWorld.grid;
+    this.snakeController = snake_control;
+    this.highlightPath = highlight_path;
     
     this.direction = [0, -1];
     this.foodEatenCount = 0;
-    this.setup();
+    this.drawBody(initial_head_pos);
   };
 
   $.extend( Snake.prototype, {
-    setup: function() {
-      head_pos = Math.round(this.gameWorld.boardSize / 2);
-
-      this.grid[head_pos][head_pos][0].className = "snake-head-square";
-      this.body[0] = new Point(head_pos,head_pos);
-      this.grid[head_pos][head_pos+1][0].className = "snake-square";
-      this.body[1] = new Point(head_pos,head_pos+1);
-      this.grid[head_pos][head_pos+2][0].className = "snake-square";
-      this.body[2] = new Point(head_pos,head_pos+2);
+    drawBody: function(initial_head_pos) {
+      this.grid[initial_head_pos][initial_head_pos][0].className = "snake-head-square";
+      this.body[0] = new Point(initial_head_pos,initial_head_pos);
+      this.grid[head_pos][initial_head_pos+1][0].className = "snake-square";
+      this.body[1] = new Point(initial_head_pos,initial_head_pos+1);
+      this.grid[initial_head_pos][initial_head_pos+2][0].className = "snake-square";
+      this.body[2] = new Point(initial_head_pos,initial_head_pos+2);
     },
     setDirection: function( dir ) {
       var head = this.body[0];
@@ -33,6 +33,27 @@ $(function(){
       }
 
       return false;
+    },
+    runSnakeController: function(food) {
+      var path = this.snakeController.findPath(this.body[0], food);
+
+      if (this.highlightPath) {
+        this.gameWorld.highlightPath(path);
+      }
+
+      var nextSquare;
+      var newDirection;
+
+      // If the snake can't find a path to the food, keep going in a safe direction if possible
+      if (path.length == 0) {
+        newDirection = this.safestDirection();
+      } else {
+        nextSquare = path[1];
+        newDirection = [nextSquare[0] - this.body[0].x, nextSquare[1] - this.body[0].y];
+      }
+
+      this.setDirection(newDirection);
+      this.move();
     },
     move: function() {
       var head_pos = this.body[0];
