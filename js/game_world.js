@@ -18,10 +18,12 @@ $(function(){
 
     this.setup();
     // place snake on the grid
-    this.snake = new window.App.Snake(this);
+
+    head_pos = Math.round(this.boardSize / 2);
+    this.snakeController = new SnakeController(this.grid);
+    this.snake = new window.App.Snake(this, head_pos, this.snakeController, true);
     this.stats = new window.App.Stats(this.snake);
     this.food = this.setFoodLocation(this.snake.nextHeadPosition());
-    this.snakeController = new SnakeController(this.grid, this.snake);
     this.gameOn = false;
     this.showStartGameScreen();
   };
@@ -101,29 +103,25 @@ $(function(){
     },
     runAi: function() {
       this.buttonPressed = false;
-      var path = this.snakeController.findPath(this.snake.body[0], this.food);
 
-      this.highlightPath(path);
-
-      var nextSquare;
-      var newDirection;
-
-      // If the snake can't find a path to the food, keep going in a safe direction if possible
-      if (path.length == 0) {
-        newDirection = this.snake.safestDirection();
-      } else {
-        nextSquare = path[1];
-        newDirection = [nextSquare[0] - this.snake.body[0].x, nextSquare[1] - this.snake.body[0].y];
-      }
-
-      this.snake.setDirection(newDirection);
-      this.snake.move();
+      this.snake.runSnakeController(this.food);
 
       this.stats.updateSnakeSize();
       this.stats.updateFoodCount();
 
-      console.log(this.gameOn);
-      if (this.gameOn) setTimeout('window.App.GameWorld.runAi()', 100);
+      if (this.gameOn) setTimeout('window.App.GameWorld.runAi()', 30);
+    },
+    runAiBattle: function() {
+      this.clearGrid();
+
+      this.snake = new window.App.Snake(this);
+      this.stats = new window.App.Stats(this.snake);
+      this.food = this.setFoodLocation(this.snake.nextHeadPosition());
+      this.snakeController = new SnakeController(this.grid, this.snake);
+
+      head_pos = Math.round(this.gameWorld.boardSize / 2);
+
+
     },
     showStartGameScreen: function() {
       var containerWidth = this.boardSize * this.tileSize;
@@ -145,6 +143,11 @@ $(function(){
       startAiButton.attr("type","button");
       startAiButton.attr("value","Start AI Simulator");
       startAiButton.attr("onClick","window.App.GameWorld.startAiSim()");
+
+      aiBattleButton = $( "<input />", {"class": "ai-battle-button"});
+      aiBattleButton.attr("type","button");
+      aiBattleButton.attr("value","AI Battle");
+      aiBattleButton.attr("onClick","window.App.GameWorld.startAiBattle()");
 
       startGameBox = $( "<div></div>", {"id": "start-game-box"} );
 
