@@ -158,10 +158,12 @@ body {
   font-size: 20pt;
 }
 
-.start-button {
+.menu-button {
   font-size: 15pt;
+  width: 275px;
 }
 
 .restart-button {
   font-size: 15pt;
+  width: 275px;
 }
