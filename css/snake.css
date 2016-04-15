@@ -56,6 +56,18 @@ body {
   background: #000066;
 }
 
+.orange-head {
+  background: #664200;
+}
+
+.red-head {
+  background: #660000;
+}
+
+.yellow-head {
+  background: #ffff00;
+}
+
 .snake-square {
   border-right: 1px solid #999999;
   border-bottom: 1px solid #999999;
@@ -68,6 +80,18 @@ body {
 
 .blue {
   background: blue;
+}
+
+.orange {
+  background: orange;
+}
+
+.red {
+  background: red;
+}
+
+.yellow {
+  background: yellow;
 }
 
 .food {
