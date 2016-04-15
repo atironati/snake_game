@@ -1,6 +1,5 @@
-var SnakeController = function( wrld, snek ) {
+var SnakeController = function( wrld ) {
   this.world = wrld;
-  this.snake = snek;
 
   // shortcuts for speed
   var abs = Math.abs;
@@ -101,9 +100,18 @@ var SnakeController = function( wrld, snek ) {
   var that = this;
   // returns boolean value (world cell is available and open)
   function canWalkHere(x, y) {
-      return ((that.world[x] != null) &&
-          (that.world[x][y] != null) &&
-          (!unwalkableTiles.includes(that.world[x][y][0].className)));
+    var classNames = that.world[x][y][0].className.split(" ");
+    var isWalkableTile = true;
+
+    classNames.forEach(function (cname) {
+        if (unwalkableTiles.includes(cname)) {
+            isWalkableTile = false;
+        }
+    });
+
+    return ((that.world[x] != null) &&
+            (that.world[x][y] != null) &&
+            (isWalkableTile));
   };
 
     // Path function, executes AStar algorithm operations
