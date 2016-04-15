@@ -334,13 +334,17 @@ $(function(){
         window.App.GameWorld.startAiSim();
       } else if (this.currentGameMode === "ai_battle") {
         window.App.GameWorld.startAiBattle();
+      } else if (this.currentGameMode === "ai_snake_pit") {
+        window.App.GameWorld.startAiSnakePit();
       }
     },
-    highlightPath: function(path) {
+    highlightPath: function(snake, path) {
       // remove old path first -- inefficient, should change when you have time
       for ( var x=0; x < this.boardSize; x++) {
         for ( var y=0; y < this.boardSize; y++) {
-          if(this.grid[x][y][0].className === "ghost-path") {
+          // uncomment this for some wacky fun
+          //if(this.grid[x][y][0].className === snake.name+"-ghost-path") {
+          if(this.grid[x][y][0].className.split(" ").includes(snake.name+"-ghost-path")) {
             this.grid[x][y][0].className = "empty-square";
           }
         }
@@ -349,9 +353,9 @@ $(function(){
       var that = this;
 
       path.forEach(function(element, index, array) {
-        if((that.snake.body[0].x != element[0] || that.snake.body[0].y != element[1]) &&
+        if((snake.body[0].x != element[0] || snake.body[0].y != element[1]) &&
         (that.food.x != element[0] || that.food.y != element[1]))
-         that.grid[element[0]][element[1]][0].className = "ghost-path";
+         that.grid[element[0]][element[1]][0].className = snake.name+"-ghost-path ghost-path";
       });
     },
     clearGrid: function() {
