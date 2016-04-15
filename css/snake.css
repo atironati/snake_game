@@ -43,17 +43,31 @@ body {
 }
 
 .snake-head-square {
-  background: #006600;
   border-right: 1px solid #999999;
   border-bottom: 1px solid #999999;
   display: inline-block;
 }
 
+.green-head {
+  background: #006600;
+}
+
+.blue-head {
+  background: #000066;
+}
+
 .snake-square {
-  background: green;
   border-right: 1px solid #999999;
   border-bottom: 1px solid #999999;
   display: inline-block;
+}
+
+.green {
+  background: green;
+}
+
+.blue {
+  background: blue;
 }
 
 .food {
