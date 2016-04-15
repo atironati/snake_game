@@ -25,7 +25,7 @@ $(function(){
     var head_pos = new Point(board_center,board_center);
 
     this.snakeController = new SnakeController(this.grid);
-    this.snake = new window.App.Snake(this, head_pos, "green", "snek", this.snakeController, true);
+    this.snake = new window.App.Snake(this, head_pos, "green", "snek", this.snakeController, true, true);
 
     this.aiSnakes = [];
 
@@ -151,7 +151,7 @@ $(function(){
         aiSnake.runSnakeController(that.food);
       });
 
-      if (this.gameOn) setTimeout('window.App.GameWorld.runAiSnakePit()', 100);
+      if (this.gameOn) setTimeout('window.App.GameWorld.runAiSnakePit()', 50);
     },
     showStartGameScreen: function() {
       var containerWidth = this.boardSize * this.tileSize;
@@ -245,8 +245,8 @@ $(function(){
       var s1_head_pos = new Point(quarter_board,board_center);
       var s2_head_pos = new Point(quarter_board+eigth_board,board_center);
 
-      this.snake = new window.App.Snake(this, s1_head_pos, "green", "snek", this.snakeController, true);
-      var snake2 = new window.App.Snake(this, s2_head_pos, "blue", "mean-snek", this.snakeController, true);
+      this.snake = new window.App.Snake(this, s1_head_pos, "green", "snek", this.snakeController, true, true);
+      var snake2 = new window.App.Snake(this, s2_head_pos, "blue", "mean-snek", this.snakeController, true, true);
       this.aiSnakes.push(snake2);
 
       this.stats = new window.App.Stats(this.snake);
@@ -275,10 +275,10 @@ $(function(){
       var s3_head_pos = new Point(eigth_board,quarter_board);
       var s4_head_pos = new Point(quarter_board+eigth_board,quarter_board);
 
-      var snake1 = new window.App.Snake(this, s1_head_pos, "green", "harry", this.snakeController, true);
-      var snake2 = new window.App.Snake(this, s2_head_pos, "blue", "larry", this.snakeController, true);
-      var snake3 = new window.App.Snake(this, s3_head_pos, "red", "jerry", this.snakeController, true);
-      var snake4 = new window.App.Snake(this, s4_head_pos, "orange", "phillip", this.snakeController, true);
+      var snake1 = new window.App.Snake(this, s1_head_pos, "green", "harry", this.snakeController, true, false);
+      var snake2 = new window.App.Snake(this, s2_head_pos, "blue", "larry", this.snakeController, true, false);
+      var snake3 = new window.App.Snake(this, s3_head_pos, "red", "jerry", this.snakeController, true, false);
+      var snake4 = new window.App.Snake(this, s4_head_pos, "orange", "phillip", this.snakeController, true, false);
       this.aiSnakes.push(snake1);
       this.aiSnakes.push(snake2);
       this.aiSnakes.push(snake3);
