@@ -63,6 +63,13 @@ body {
   display: inline-block;
 }
 
+.ghost-path {
+  background: #b2b2ff;
+  border-right: 1px solid #999999;
+  border-bottom: 1px solid #999999;
+  display: inline-block;
+}
+
 #snake-logo {
   background: url('../img/snake-logo.png') no-repeat left top;
   background-size: 300px 188px;

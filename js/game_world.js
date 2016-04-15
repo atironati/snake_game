@@ -7,7 +7,7 @@ $(function(){
                        40:[0,1]};
     this.gameOn = false;
     this.buttonPressed = false;
-    this.boardSize = 20;
+    this.boardSize = 40;
     this.tileSize = 20;
 
     // Initialize grid array
@@ -21,6 +21,7 @@ $(function(){
     this.snake = new window.App.Snake(this);
     this.stats = new window.App.Stats(this.snake);
     this.food = this.setFoodLocation(this.snake.nextHeadPosition());
+    this.snakeController = new SnakeController(this.grid, this.snake);
     this.gameOn = false;
     this.showStartGameScreen();
   };
@@ -98,6 +99,32 @@ $(function(){
       console.log(this.gameOn);
       if (this.gameOn) setTimeout('window.App.GameWorld.run()', 100);
     },
+    runAi: function() {
+      this.buttonPressed = false;
+      var path = this.snakeController.findPath(this.snake.body[0], this.food);
+
+      this.highlightPath(path);
+
+      var nextSquare;
+      var newDirection;
+
+      // If the snake can't find a path to the food, keep going in a safe direction if possible
+      if (path.length == 0) {
+        newDirection = this.snake.safestDirection();
+      } else {
+        nextSquare = path[1];
+        newDirection = [nextSquare[0] - this.snake.body[0].x, nextSquare[1] - this.snake.body[0].y];
+      }
+
+      this.snake.setDirection(newDirection);
+      this.snake.move();
+
+      this.stats.updateSnakeSize();
+      this.stats.updateFoodCount();
+
+      console.log(this.gameOn);
+      if (this.gameOn) setTimeout('window.App.GameWorld.runAi()', 100);
+    },
     showStartGameScreen: function() {
       var containerWidth = this.boardSize * this.tileSize;
 
@@ -114,12 +141,20 @@ $(function(){
       startButton.attr("value","Start Game");
       startButton.attr("onClick","window.App.GameWorld.startGame()");
 
+      startAiButton = $( "<input />", {"class": "start-ai-button"});
+      startAiButton.attr("type","button");
+      startAiButton.attr("value","Start AI Simulator");
+      startAiButton.attr("onClick","window.App.GameWorld.startAiSim()");
+
       startGameBox = $( "<div></div>", {"id": "start-game-box"} );
 
       logoDiv = $( "<div></div>", {"id": "snake-logo"});
+      br = $( "<br />" );
 
       startGameBox.append(logoDiv);
       startGameBox.append(startButton);
+      startGameBox.append(br);
+      startGameBox.append(startAiButton);
       startGameScreen.append(startGameBox);
 
       this.el.append(startGameScreen);
@@ -127,6 +162,7 @@ $(function(){
       var topPosition = (containerWidth/4);
       startGameBox.css({"top":topPosition});
     },
+
     hideStartGameScreen: function() {
       this.el.find("#start-game").hide();
     },
@@ -137,6 +173,14 @@ $(function(){
       this.stats.updateSnakeSize();
       this.gameOn = true;
       this.run();
+    },
+    startAiSim: function() {
+      this.hideStartGameScreen();
+      this.stats.startTimer();
+      this.stats.updateFoodCount();
+      this.stats.updateSnakeSize();
+      this.gameOn = true;
+      this.runAi();
     },
     endGame: function() {
       this.gameOn = false;
@@ -167,6 +211,24 @@ $(function(){
       $(".game-board").remove();
       window.App.GameWorld = new GameWorld();
       window.App.GameWorld.startGame();
+    },
+    highlightPath: function(path) {
+      // remove old path first -- inefficient, should change when you have time
+      for ( var x=0; x < this.boardSize; x++) {
+        for ( var y=0; y < this.boardSize; y++) {
+          if(this.grid[x][y][0].className === "ghost-path") {
+            this.grid[x][y][0].className = "empty-square";
+          }
+        }
+      }
+
+      var that = this;
+
+      path.forEach(function(element, index, array) {
+        if((that.snake.body[0].x != element[0] || that.snake.body[0].y != element[1]) &&
+        (that.food.x != element[0] || that.food.y != element[1]))
+         that.grid[element[0]][element[1]][0].className = "ghost-path";
+      });
     }
   });
 

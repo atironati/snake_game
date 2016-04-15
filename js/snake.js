@@ -7,6 +7,7 @@ $(function(){
     }
     this.gameWorld = gw;
     this.grid = this.gameWorld.grid;
+    
     this.direction = [0, -1];
     this.foodEatenCount = 0;
     this.setup();
@@ -46,18 +47,7 @@ $(function(){
       // set old head to regular body part
       this.grid[head_pos.x][head_pos.y][0].className = "snake-square";
 
-      // is the snake about to go off the grid?
-      if ((new_head_pos_x < 0 || new_head_pos_x >= this.grid.length) ||
-          (new_head_pos_y < 0 || new_head_pos_y >= this.grid[0].length)) {
-        this.gameWorld.endGame();
-        return;
-      }
-
-      // is the snake about to eat itself?
-      if (this.grid[new_head_pos.x][new_head_pos.y][0].className === "snake-square") {
-        this.gameWorld.endGame();
-        return;
-      }
+      if(this.worldEndingDeathCheck(new_head_pos)) return;
 
       // draw the head in its new position
       this.grid[new_head_pos.x][new_head_pos.y][0].className = "snake-head-square";
@@ -75,6 +65,56 @@ $(function(){
       var new_head_pos_x = head_pos.x + this.direction[0];
       var new_head_pos_y = head_pos.y + this.direction[1];
       return new Point(new_head_pos_x,new_head_pos_y);
+    },
+    nextHeadPositionWithDirection: function(dir) {
+      var head_pos = this.body[0];
+      var new_head_pos_x = head_pos.x + dir[0];
+      var new_head_pos_y = head_pos.y + dir[1];
+      return new Point(new_head_pos_x,new_head_pos_y);
+    },
+    worldEndingDeathCheck: function(new_head_pos) {
+      if (this.deathCheck(new_head_pos)) {
+        this.gameWorld.endGame();
+        return true;
+      } else {
+        return false;
+      }
+    },
+    deathCheck: function(new_head_pos) {
+      // is the snake about to go off the grid?
+      if ((new_head_pos.x < 0 || new_head_pos.x >= this.grid.length) ||
+          (new_head_pos.y < 0 || new_head_pos.y >= this.grid[0].length)) {
+        return true;
+      }
+
+      // is the snake about to eat itself?
+      if (this.grid[new_head_pos.x][new_head_pos.y][0].className === "snake-square") {
+        return true;
+      }
+
+      return false;
+    },
+    safestDirection: function() {
+      var returnDir = this.direction;
+      var possibleDirections = [[-1,0],
+                                [0,-1],
+                                [1,0],
+                                [0,1]];
+      var that = this;
+
+      // If we aren't going to die next turn, keep going that way, otherwise choose a new direction
+      if(this.deathCheck(this.nextHeadPosition())) {
+        var maybeSafeDir = possibleDirections.forEach(function(possibleDir) {
+          var possibleNextHeadPosition = that.nextHeadPositionWithDirection(possibleDir);
+          if (!that.deathCheck(possibleNextHeadPosition)) {
+            returnDir = possibleDir;
+          }
+        })
+
+        return returnDir;
+      } else {
+        return returnDir;
+      }
     },
     foodCheck: function ( food ) {
       var head_pos = this.body[0];
