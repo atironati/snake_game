@@ -229,6 +229,13 @@ $(function(){
         (that.food.x != element[0] || that.food.y != element[1]))
          that.grid[element[0]][element[1]][0].className = "ghost-path";
       });
+    },
+    clearGrid: function() {
+      for ( var x=0; x < this.boardsize; x++) {
+        for ( var y=0; y < this.boardsize; y++) {
+          this.grid[x][y][0].classname = "empty-square";
+        }
+      }
     }
   });
 
