@@ -72,7 +72,9 @@ $(function(){
         }
       }
 
-      this.removeSnakeSquaresFromGrid(this.snake, boardTiles);
+      if (!(this.snake === undefined)) {
+        this.removeSnakeSquaresFromGrid(this.snake, boardTiles);
+      }
 
       var that = this;
       this.aiSnakes.forEach(function(aiSnake) {
