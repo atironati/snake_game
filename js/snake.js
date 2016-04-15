@@ -29,10 +29,15 @@ $(function(){
     },
     setDirection: function( dir ) {
       var head = this.body[0];
-      var next = this.grid[head.x + dir[0]][head.y+ dir[1]];
-      if (!next[0].className.split(" ").includes("snake-square")) { // TODO: do I really need this logic? something to do with button pressed?
-        this.direction = dir;
-        return true;
+      var x_delta = head.x + dir[0];
+      var y_delta = head.y+ dir[1];
+      
+      if (x_delta < this.grid.length && y_delta < this.grid[0].length) {
+        var next = this.grid[x_delta][y_delta];
+        if (!next[0].className.split(" ").includes("snake-square")) {
+          this.direction = dir;
+          return true;
+        }
       }
 
       return false;
