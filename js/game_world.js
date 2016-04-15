@@ -92,6 +92,10 @@ $(function(){
       // randomly set food
       var random   = Math.floor((Math.random() * boardTilesArray.length) - 1);
       var food_loc = boardTilesArray[random];
+      if (food_loc === undefined) {
+        random   = Math.floor((Math.random() * boardTilesArray.length) - 1);
+        food_loc = boardTilesArray[random];
+      }
       this.grid[food_loc.x][food_loc.y][0].className = 'food';
 
       return new Point(food_loc.x,food_loc.y);
