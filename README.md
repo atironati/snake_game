@@ -3,7 +3,7 @@ snake_game
 
 An implementation of the game snake, with an attempt at intelligent AI
 
-![Snake](http://imgur.com/WurHsV2)
+![Snake](http://imgur.com/WurHsV2.gif)
 
 TODO:
 
