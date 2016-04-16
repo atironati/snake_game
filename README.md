@@ -3,6 +3,11 @@ snake_game
 
 An implementation of the game snake, with an attempt at intelligent AI
 
+
+## Running the game
+
+To run the game, simply open game.html in a web browser.
+
 ![Snake](http://imgur.com/WurHsV2.gif)
 
 TODO:
